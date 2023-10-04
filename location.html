@@ -1,0 +1,164 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Data Entry</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            background-color: #007acc;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        label {
+            width: 100%;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="submit"] {
+            background-color: #007acc;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #005b9f;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007acc;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        footer {
+            background-color: #007acc; 
+            color: #fff;
+            text-align: center;
+            padding: 0px 0;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Student Data Entry</h1>
+    <form id="inputForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="registerNumber">Register Number:</label>
+        <input type="text" id="registerNumber" name="registerNumber" required>
+        <input type="submit" id="submitButton" value="Submit">
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Registration Number</th>
+                <th>Location</th>
+            </tr>
+        </thead>
+        <tbody id="dataSheet">
+        </tbody>
+    </table>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const inputForm = document.getElementById("inputForm");
+            const dataSheet = document.getElementById("dataSheet");
+            const submitButton = document.getElementById("submitButton");
+
+            let isSubmitted = false; 
+            inputForm.addEventListener("submit", function (e) {
+                e.preventDefault(); 
+
+                if (!isSubmitted) {
+                    const name = document.getElementById("name").value;
+                    const registerNumber = document.getElementById("registerNumber").value;
+                    if ("geolocation" in navigator) {
+                        navigator.geolocation.getCurrentPosition(function (position) {
+                            const latitude = position.coords.latitude;
+                            const longitude = position.coords.longitude;
+                            const newRow = dataSheet.insertRow();
+                            newRow.insertCell().textContent = name;
+                            newRow.insertCell().textContent = registerNumber;
+                            newRow.insertCell().textContent = ""; 
+                            newRow.insertCell().textContent = `Latitude: ${latitude}, Longitude: ${longitude}`;
+                            newRow.insertCell().textContent = ""; 
+                            inputForm.reset();
+                            isSubmitted = true;
+                            submitButton.disabled = true;
+                            setTimeout(function () {
+                                isSubmitted = false;
+                                submitButton.disabled = false;
+                            }, 300000); 
+                        }, function (error) {
+                            console.error("Error getting location:", error);
+                        });
+                    } else {
+                        console.error("Geolocation is not supported in this browser.");
+                    }
+                }
+            });
+        });
+    </script>
+    <footer>
+        <p>&copy; 2023 Software Development Cell, VIT, Chennai-600 127. All rights reserved.</p>
+    </footer>
+</body>
+</html>
